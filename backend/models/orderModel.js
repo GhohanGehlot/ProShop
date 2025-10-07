@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import { type } from "os";
 
-const orderSchema = mongoose.Schema({
+
+const orderSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
@@ -74,7 +74,7 @@ const orderSchema = mongoose.Schema({
     deliveredAt : {
         type: Date,
     }
-} , {timeStamp : true})
+} , {timeStamps : true})
 
 
 const Order = mongoose.model("Order" , orderSchema);
