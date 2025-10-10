@@ -19,8 +19,5 @@ export const getProductById = asyncHandler(async (req , res) => {
    else{
     res.status(404);
     throw new Error('Resource not found');
-   }
-
-   
-  
+   }  
 })
