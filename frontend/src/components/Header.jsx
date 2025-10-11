@@ -1,11 +1,33 @@
-import {Badge , Navbar , Nav , Container} from 'react-bootstrap';
+import {Badge , Navbar , Nav , Container, NavDropdown , NavDropdown} from 'react-bootstrap';
 import {FaShoppingCart , FaUser}  from 'react-icons/fa'
 import logo from '../assets/logo.png';
 import {LinkContainer} from 'react-router-bootstrap'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate} from 'react-router-dom';
+import { useLoginMutation } from '../slices/usersApiSlice';
+import { logout} from '../slices/authSlice';
 
 const Header = () => {
-    const { cartItems} = useSelector((state) => state.cart)
+    const { cartItems} = useSelector((state) => state.cart);
+    const { userInfo} = useSelector((state) => state.auth);
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const [logoutApiCall] = useLoginMutation();
+
+
+    const  logoutHandler = async () => {
+        try {
+            await logoutApiCall().unwrap();
+
+            dispatch(logout());
+            navigate('/login')
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
   return (
     <header>
         <Navbar bg='dark' variant='dark' expand='md' collapseOnSelect>
@@ -32,11 +54,28 @@ const Header = () => {
                             </Nav.Link>
                         </LinkContainer>
 
-                        <LinkContainer to='/login'>
+                        { userInfo ? (
+                            <NavDropdown 
+                            title= {userInfo.name}
+                            id='username'
+                            
+                            >
+                                <LinkContainer to='/profile'>
+                                    <NavDropdown.Item>Profile</NavDropdown.Item>
+                                </LinkContainer>
+                                <NavDropdown onClick={logoutHandler}>
+                                    Logout
+                                </NavDropdown>
+                            </NavDropdown>
+                        ) : (
+                            <LinkContainer to='/login'>
                             <Nav.Link>
                                 <FaUser/>Sign In 
                             </Nav.Link> 
                         </LinkContainer>
+                        )}
+
+                        
 
                         
                         
@@ -49,4 +88,4 @@ const Header = () => {
   )
 }
 
-export default Header
+export default Header;
